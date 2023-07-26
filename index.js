@@ -25,7 +25,7 @@ connection.connect(function (err,res) {
   }
 });
 app.get("/",(req, res) => {
-  res.json("OK")
+  res.json("OK 200")
 })
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}.`);
