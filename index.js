@@ -206,7 +206,7 @@ if(estatus == "Pendiente"){
 }else{
   
   connection.query(
-    "UPDATE pedidos set Producto=?, CantidadComprar=?, FechaCreada=?, Solicitante=?, Comprador=?, FechaCompra=?, Estatus=?,TotalCompra =? where PedidoID = ?;",
+    "UPDATE pedidos set CantidadComprar= CantidadComprar, Comprador=?, FechaCompra=?, Estatus=?,TotalCompra =? where PedidoID = ?;",
     [
       producto,
       cantidad,
@@ -223,7 +223,7 @@ if(estatus == "Pendiente"){
       if (error) {
         console.log(res.status(500).send(error));
       } else {
-         connection.query(
+        connection.query(
           "UPDATE inventariocosas set Cantidad= Cantidad + ? where ProductoID = ?;",
           [cantidad, id],
           (error, resultado) => {
@@ -235,10 +235,6 @@ if(estatus == "Pendiente"){
             }
           }
         );
-        console.log(res.status(200).send(resultado));
-      }
-    }
-  );
       }
     }
   );
