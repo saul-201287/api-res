@@ -228,6 +228,21 @@ if(estatus == "Pendiente"){
   );
 }
 });
+app.get('/id-pro/:producto', (req, res) => {
+  const producto = req.params.producto
+  connection.query(
+    "select ProductoID from inventariocosas where Nombre = ?",
+    [producto],
+    (error, resultado) => {
+      //alterar(resultado);
+      if (error) {
+        console.log(res.status(500).send(error));
+      } else {
+        console.log(res.status(200).send(resultado));
+      }
+    }
+  );
+})
 app.post("/respaldo", (req, res) => {
   const folio = req.body.folio;
   const cantidad = req.body.cantidad;
