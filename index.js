@@ -179,6 +179,7 @@ app.post("/pedidos", (req, res) => {
   const fechaF = req.body.fechaF;
   const estatus = req.body.estatus;
   const total = req.body.total;
+  const id = req.body.id;
 if(estatus == "Pendiente"){
  connection.query(
    "INSERT INTO pedidos(PedidoID, Producto, CantidadComprar, FechaCreada, Solicitante, Comprador, FechaCompra, Estatus,TotalCompra) VALUE(?,?,?,?,?,?,?,?,?);",
@@ -222,7 +223,22 @@ if(estatus == "Pendiente"){
       if (error) {
         console.log(res.status(500).send(error));
       } else {
+         connection.query(
+          "UPDATE inventariocosas set Cantidad= Cantidad + ? where ProductoID = ?;",
+          [cantidad, id],
+          (error, resultado) => {
+            //alterar(resultado);
+            if (error) {
+              console.log(res.status(500).send(error));
+            } else {
+              console.log(res.status(200).send(resultado));
+            }
+          }
+        );
         console.log(res.status(200).send(resultado));
+      }
+    }
+  );
       }
     }
   );
