@@ -146,29 +146,6 @@ app.post("/producto-nuevo", (req, res) => {
     );
   }
 });
-
-app.post("/ventas", (req, res) => {
-  const folio = req.body.folio;
-  const cantidad = req.body.cantidad;
-  const concepto = req.body.concepto;
-  const fecha = req.body.fecha;
-  const total = req.body.total;
-  const vendedor = req.body.vendedor;
-  const precioUni = req.body.precioUni;
-
-  connection.query(
-    "INSERT INTO ventas(ID_Venta, Cantidad, Concepto, FechaVenta, TotalVenta, Vendedor, PrecioUnitario) VALUE(?,?,?,?,?,?,?);",
-    [folio, cantidad, concepto, fecha, total, vendedor, precioUni],
-    (error, resultado) => {
-      //alterar(resultado);
-      if (error) {
-        console.log(res.status(500).send(error));
-      } else {
-        console.log(res.status(200).send(resultado));
-      }
-    }
-  );
-});
 app.post("/ventas", (req, res) => {
   const folio = req.body.folio;
   const cantidad = req.body.cantidad;
@@ -201,45 +178,66 @@ app.post("/pedidos", (req, res) => {
   const fechaF = req.body.fechaF;
   const estatus = req.body.estatus;
   const total = req.body.total;
-
-  let query,
-    parametros = "";
-  if (estatus == "Pendiente") {
-    query =
-      "INSERT INTO pedidos(PedidoID, Producto, CantidadComprar, FechaCreada, Solicitante, Comprador, FechaCompra, Estatus,TotalCompra) VALUE(?,?,?,?,?,?,?,?,?);";
-    parametros = [
-      folio,
-      producto,
-      cantidad,
-      fechaI,
-      solicitante,
-      comprador,
-      fechaF,
-      estatus,
-      total,
-    ];
+ 
+  if (estatus != "Realizado") {
+     connection.query(
+       "INSERT INTO pedidos(PedidoID, Producto, CantidadComprar, FechaCreada, Solicitante, Comprador, FechaCompra, Estatus,TotalCompra) VALUE(?,?,?,?,?,?,?,?,?);",
+       [
+         folio,
+         producto,
+         cantidad,
+         fechaI,
+         solicitante,
+         comprador,
+         fechaF,
+         estatus,
+         total,
+       ],
+       (error, resul) => {
+         if (error) {
+           res.status(500).send(error);
+         } else {
+           console.log(res.status(200).send(resul));
+         }
+       }
+     );
   } else {
-    query =
-      "UPDATE pedidos set CantidadComprar= CantidadComprar, Comprador=?, FechaCompra=?, Estatus=?,TotalCompra =? where PedidoID = ?;";
-    parametros = [
-      producto,
-      cantidad,
-      fechaI,
-      solicitante,
-      comprador,
-      fechaF,
-      estatus,
-      total,
-      folio,
-    ];
+     connection.query(
+       "UPDATE pedidos set  Comprador=?, FechaCompra=?, Estatus=?,TotalCompra =? where PedidoID = ?;",
+       [
+         comprador,
+         fechaF,
+         estatus,
+         total,
+         folio,
+       ],
+       (error, resul) => {
+         if (error) {
+           res.status(500).send(error);
+         } else {
+           console.log(res.status(200).send(resul));
+         }
+       }
+     );
+    
   }
-  connection.query(query, parametros, (error, res) => {
-    if (error) {
-     res.status(500).send(error);
-    } else {
-     res.status(200).send(res);
+ 
+});
+
+app.put("/aumento", (req, res) => {
+  const cantidad = req.body.cantidad;
+  const id = req.body.id;
+  connection.query(
+    "UPDATE inventariocosas set Cantidad= Cantidad + ? where ProductoID = ?;",
+    [cantidad, id],
+    (error, resultado) => {
+      if (error) {
+       res.status(500).send(error);
+      } else {
+       res.status(200).send(resultado);
+      }
     }
-  });
+  );
 });
 app.get('/id-pro/:producto', (req, res) => {
   const producto = req.params.producto
