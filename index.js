@@ -107,6 +107,42 @@ app.get("/sales4", (req, res) => {
     }
   });
 });
+app.get("/respaldo-ventas", (req, res) => {
+  connection.query(
+    "SELECT * FROM kaychiapas.respaldo_ventas;",
+    (error, resultado) => {
+      if (error) {
+        res.status(500).send(error, "errorrrr");
+      } else {
+        res.status(200).send(resultado);
+      }
+    }
+  );
+});
+app.get("/suma-ventas", (req, res) => {
+  connection.query(
+    "select sum(TotalVenta) as venta from ventas;",
+    (error, resultado) => {
+      if (error) {
+        res.status(500).send(error, "errorrrr");
+      } else {
+        res.status(200).send(resultado);
+      }
+    }
+  );
+});
+app.get("/suma-compras", (req, res) => {
+  connection.query(
+    "select sum(TotalCompra) as compra from pedidos where Estatus = 'Realizado';",
+    (error, resultado) => {
+      if (error) {
+        res.status(500).send(error, "errorrrr");
+      } else {
+        console.log(res.status(200).send(resultado));
+      }
+    }
+  );
+});
 
 app.post("/producto-nuevo", (req, res) => {
   const folio = req.body.folio;
